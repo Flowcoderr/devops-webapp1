@@ -1,0 +1,28 @@
+name: CI-CD Slack Notification
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Send Slack Notification - Success
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"🚀 GitHub Action Successful for devops-webapp1"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Send Slack Notification - Failure
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ GitHub Action Failed for devops-webapp1"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
